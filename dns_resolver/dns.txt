@@ -55,7 +55,7 @@ DNS HEADER
     NSCOUNT - 0
     ARCOUNT - 0
 
-DNS QUESTION
+DNS QUESTION 
 
     +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
     |                                               |
@@ -81,3 +81,4 @@ qtypes:
 15 (MX): Mail exchanger record 
 12 (PTR): Pointer record (reverse DNS lookup) 
 
+UDP SOCKETS
