@@ -1,0 +1,77 @@
+Things I remember about DNS from Networking:
+- domain name system is what it stands for I think.
+- basically you type in a URL, which is the website you want to access but to a computer, it really needs to know which server it has to access to ensure that you get what you requested for.
+- first it connects to the local DNS cache, not sure how many there are per geographical location, but typically the major website - ip adress pairs will be found easily that way. google.com/va-midwest, netflix.com/va-midwest should mostly be available because they are commonly accessed websites. im guessing your ISP might also be able to provide more relevant and personalized caching? need to look into this.
+- but if it doesnt find it, first it checks the authoratative level dns i think with has major urls, then it goes to tdl? i forget what its called, which has top level such as google.com but not the specific location i think, and then if it is unable to find it there , it goes to the root-level dns server which has the .com and .org. there are 13 of these in the world.
+- in terms of implementation, im not sure if theres any library or something that would help us with this...
+
+
+Things I researched: 
+
+https://datatracker.ietf.org/doc/html/rfc1035#section-4.1.1
+
+    16 bits per field aka 2 bytes
+
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                      ID                       |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                    QDCOUNT                    |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                    ANCOUNT                    |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                    NSCOUNT                    |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                    ARCOUNT                    |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+
+
+    ID - 0 (Random? not sure if this matters)
+    QR - 1  (1 for queries)
+    Opcode - 0000  (standard?)
+    AA - 0
+    TC - 0
+    RD - 0  (recursion not desired, iterative is better from what i recall because it reduces network traffic but might be slower)
+    RA - 0
+    Z - 000
+    RCODE - 0000
+
+        (each is two bytes below)
+    QDCOUNT - 1 
+    ANCOUNT - 0
+    NSCOUNT - 0
+    ARCOUNT - 0
+
+
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                                               |
+    /                     QNAME                     /
+    /                                               /
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                     QTYPE                     |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                     QCLASS                    |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+
+    QNAME - www.google.com (variable number of octets; no padding is used. you need to convert url into parts based on the period with size followed by letters in hexa/binary)
+
+    QTYPE - 1 (A for ip address of host i think?)
+    QCLASS - 1 (IN for the internet?)
+
+
+
+qtypes:
+1 (A): Standard host address (IP address) 
+2 (NS): Nameserver record 
+5 (CNAME): Canonical name record 
+15 (MX): Mail exchanger record 
+12 (PTR): Pointer record (reverse DNS lookup) 
+
+A DNS message has:
+- A header.
+- A questions section:
+
+- An answer section.
+- An authority section.
+- An additional section.
