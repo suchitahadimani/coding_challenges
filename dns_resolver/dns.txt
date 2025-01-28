@@ -2,13 +2,25 @@ Things I remember about DNS from Networking:
 - domain name system is what it stands for I think.
 - basically you type in a URL, which is the website you want to access but to a computer, it really needs to know which server it has to access to ensure that you get what you requested for.
 - first it connects to the local DNS cache, not sure how many there are per geographical location, but typically the major website - ip adress pairs will be found easily that way. google.com/va-midwest, netflix.com/va-midwest should mostly be available because they are commonly accessed websites. im guessing your ISP might also be able to provide more relevant and personalized caching? need to look into this.
-- but if it doesnt find it, first it checks the authoratative level dns i think with has major urls, then it goes to tdl? i forget what its called, which has top level such as google.com but not the specific location i think, and then if it is unable to find it there , it goes to the root-level dns server which has the .com and .org. there are 13 of these in the world.
+- but if it doesnt find it, first it checks the authoratative level dns i think with has major urls, then it goes to tld? i forget what its called, which has top level such as google.com but not the specific location i think, and then if it is unable to find it there , it goes to the root-level dns server which has the .com and .org. there are 13 of these in the world.
 - in terms of implementation, im not sure if theres any library or something that would help us with this...
 
 
 Things I researched: 
 
+- I was sosos close, the servers are checked in the opposite order. Root-level first based on general domain name, .com for example, and then it goes to the tld or top-level domain server to google.com, and finally to the actual authoratative server to the specific midwest.google.com server 
+
 https://datatracker.ietf.org/doc/html/rfc1035#section-4.1.1
+
+A DNS message has:
+- A header.
+- A questions section:
+
+(- An answer section.
+- An authority section.
+- An additional section.)
+
+DNS HEADER
 
     16 bits per field aka 2 bytes
 
@@ -43,6 +55,7 @@ https://datatracker.ietf.org/doc/html/rfc1035#section-4.1.1
     NSCOUNT - 0
     ARCOUNT - 0
 
+DNS QUESTION
 
     +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
     |                                               |
@@ -68,10 +81,3 @@ qtypes:
 15 (MX): Mail exchanger record 
 12 (PTR): Pointer record (reverse DNS lookup) 
 
-A DNS message has:
-- A header.
-- A questions section:
-
-- An answer section.
-- An authority section.
-- An additional section.
