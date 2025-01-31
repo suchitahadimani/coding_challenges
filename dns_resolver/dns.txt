@@ -81,4 +81,12 @@ qtypes:
 15 (MX): Mail exchanger record 
 12 (PTR): Pointer record (reverse DNS lookup) 
 
+
+
+google's public dns resolver essentially does what our ISP does, i thought it was referring to google's urls but it's not. you can configure your device to use google public dns resolver instead of ur ISPs
+
+originally i was thinking, then you wouldn't need an isp, but dns only gives you the address of the website to visit, you need to then actually make an http request or whatever to ensure you can actually load the webpage, hence the need for isp
+
+google public dns is supposedly faster becuase they already have a lot of caching due to scraping so much of the internet on a regular basis. google crawls the webs, stores basic informations about website content, pictures, videos, etc and stores a cached version in its servers to make it more acessible and so that they can run their own algorithm and display the most relevant URL for the user.
+
 UDP SOCKETS

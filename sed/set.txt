@@ -1,0 +1,9 @@
+things i knew:
+- either doing this in c or python, not really sure yet..
+- will need a regex library ...
+- will need to figure out how to scan the files efficiently and perform all the replacements or repetitions as needed by the problem statement
+-
+
+
+
+things i researched:

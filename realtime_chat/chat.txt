@@ -1,0 +1,13 @@
+building a chat an client server --- ive done this a little bit here and there.
+
+things i knew before:
+- this will require sockets -- the dns one needed it too, but this one is more explicit i think
+- sockets are like the portal through which you communicate other devices, it sort of creates a connection. a literal socket almost. so the ip address corresponds to the device and the port number is what specifies the specific socket you're connected to.
+- so for this project the client will be sending on one port and server will be listening on another port
+- multithreading applications -- do i want to do this in go? just change up the language a little bit? network programming in go should be pretty feasible to do as well, i just need to learn how to set up sockets and everything
+
+- anytime a user connects to the server adn types a message, it has to be broadcasted
+
+things i researched:
+
+telnet was the precursor to ssh, bascically allowed you to access a remote computer on your LAN from your laptop,

@@ -1,0 +1,4 @@
+things i know:
+- i want to do this in rust and try out network programming in a different language. this one is just sending out packets on udp, and then measuring for the ICMP time packet and determine the host which sent that packet.
+- you want to keep increasing the ttl until it reaches the destinations.
+- one port for sending packets + one port for receiving the ICMP responses.
