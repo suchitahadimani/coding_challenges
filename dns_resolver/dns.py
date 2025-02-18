@@ -1,5 +1,6 @@
 import struct
 import socket
+from io import BytesIO
 
 # PART ONE SETTING UP DNS
 
@@ -7,9 +8,9 @@ import socket
 dns_header_format = ">HHHHHH"
 
 #random? shouldn't matter? 
-transaction_id = 7   
+transaction_id = 22  
 # 1000 0000 0000 0000 since only qr is set
-flags = (1 << 15) | (0 << 11) | (0 << 10) | (0 << 9) | (0 << 8) | (0 << 7) | (0 << 4)
+flags = 0x0100
 qdcount = 1  
 ancount = 0  
 nscount = 0  
@@ -33,7 +34,7 @@ def convert_qname(qname):
     parts = qname.split(".")
     return b"".join(len(part).to_bytes(1, "big") + part.encode() for part in parts) + b"\x00"
 
-qname = convert_qname("www.google.com")
+qname = convert_qname("dns.google.com")
 qtype = 1
 qclass = 1
 
@@ -55,12 +56,12 @@ print("query: ", dns_query)
 # PART TWO ACTUALLY SENDING IT USING SOCKETS
 #now that the dns is in shape, all thats needed is sending it across a socket to a server
 
-HOST = '8.8.8.8'   #googles port and ip
+HOST = "8.8.8.8"   #googles port and ip
 PORT = 53  
 
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect((HOST, PORT))
-client_socket.sendall(dns_query)
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+client_socket.settimeout(5)
+client_socket.sendto(dns_query,(HOST, PORT))
 
 response = client_socket.recv(1024)
 client_socket.close()
@@ -68,6 +69,17 @@ client_socket.close()
 print(f"Received from server: {response}")
 
 # PART THREE EXTRACT THE RESPONSE AND DETERMINE THE IP RESPONSE
+
+reader = BytesIO(response)
+items = struct.unpack("!HHHHHH", reader.read(12))
+print(items)
+
+parts = []
+while (length := reader.read(1)[0]) != 0:
+    parts.append(reader.read(length))
+print(b".".join(parts))
+data = reader.read(4)
+
 
 
 

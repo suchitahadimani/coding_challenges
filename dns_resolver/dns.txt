@@ -40,7 +40,7 @@ DNS HEADER
 
 
     ID - 0 (Random? not sure if this matters)
-    QR - 1  (1 for queries)
+    QR - 0  (0 for queries -- i had mistakenly set this to 1, originally and everything kept timing out and i had no idea why)
     Opcode - 0000  (standard?)
     AA - 0
     TC - 0
@@ -89,4 +89,26 @@ originally i was thinking, then you wouldn't need an isp, but dns only gives you
 
 google public dns is supposedly faster becuase they already have a lot of caching due to scraping so much of the internet on a regular basis. google crawls the webs, stores basic informations about website content, pictures, videos, etc and stores a cached version in its servers to make it more acessible and so that they can run their own algorithm and display the most relevant URL for the user.
 
-UDP SOCKETS
+UDP SOCKETS are used for dns packets 
+
+I think this is the response field for the dns?
+
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                                               |
+    /                                               /
+    /                      NAME                     /
+    |                                               |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                      TYPE                     |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                     CLASS                     |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                      TTL                      |
+    |                                               |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                   RDLENGTH                    |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--|
+    /                     RDATA                     /
+    /                                               /
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+
