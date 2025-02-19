@@ -101,9 +101,7 @@ def parse_compressed_data(reader):
     return ".".join(parts)
 
 def decompress(length, reader):
-    #length = (reader.read(1)[0] ^ (3 << 6) )
-    print("here")
-    pointer_bytes = bytes([length & 0b0011_1111]) + reader.read(1) #this returns a pointer to the actual position where the information is located
+    pointer_bytes = bytes([length ^ (3 << 6)]) + reader.read(1) #this returns a pointer to the actual position where the information is located
     pointer = struct.unpack("!H", pointer_bytes)[0]
     current_pos = reader.tell()
     reader.seek(pointer)
@@ -121,7 +119,7 @@ def extract_response(response):
 
     #This is the DNS header, garunteed to be 12 bytes long
     items = struct.unpack("!HHHHHH", reader.read(12)) 
-    print(items)
+    print("dns header", items, '\n')
     num_answers = items[3]
     num_auth = items[4]
     num_add = items[5]
@@ -136,12 +134,16 @@ def extract_response(response):
 
     #DNS RESPONSE FINALLY
     #because its compressed, the actual length starts after the first 2. 
-    print(parse_data(reader)) 
+    for i in range(num_answers):
+        print("Record ", i+1)
+        print("dns record", parse_data(reader)) 
 
-    #the rest of the record type
-    data = reader.read(10)
-    type_, class_, ttl, data_len = struct.unpack("!HHIH", data) 
-    print(type_,class_,ttl,data_len)
+        #the rest of the record type
+        data = reader.read(10)
+        type_, class_, ttl, data_len = struct.unpack("!HHIH", data) 
+        data = reader.read(data_len)
+        print(".".join(str(x) for x in data))
+        print()
 
 
 
@@ -151,8 +153,10 @@ def extract_response(response):
 
 #PART FOUR -- GENERALIZE, PUT EVERYTHING INTO METHODS, MAKE IT REUSABLE
 
-def perform_dns():
-    dns_query = create_dns_header() + create_dns_question("dns.google.com")
+def perform_dns(url):
+    dns_query = create_dns_header() + create_dns_question(url)
     extract_response(send_and_receive_dns(dns_query))
 
-perform_dns()
+while True:
+    url = input("Enter a URL: ")
+    perform_dns(url)
