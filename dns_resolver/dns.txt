@@ -112,3 +112,20 @@ I think this is the response field for the dns?
     /                                               /
     +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 
+In every DNS Response you will find the same number of answers per section (answer, authoratative, and additional)
+
+Also the DNS response includes the original header, question, AND THEN the actual resposne.
+I was trying to print the dns response, and i saw that it had a length of 192, but then it kept not working properly (and also 192 felt weirdly long for a response, espeically if im supposed to extract an ip address) apparently, that's the code for compression, anything that starts with 11-- is just compressed. which i could have found had a scrolled down a little more.
+
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    | 1  1|                OFFSET                   |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+
+The first two bits are ones.  This allows a pointer to be distinguished from a label, since the label must begin with two zero bits becauselabels are restricted to 63 octets or less.  (The 10 and 01 combinationsare reserved for future use.)  The OFFSET field specifies an offset fromthe start of the message.
+
+
+things were starting to get messy, so i started to create functions for all of the above, so its not just a one time thing.
+
+
+
+Lots of help + guideliens from this: https://implement-dns.wizardzines.com/book/intro --> really liked this website for learning the basics. 
