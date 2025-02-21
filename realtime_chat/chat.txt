@@ -3,11 +3,32 @@ building a chat an client server --- ive done this a little bit here and there.
 things i knew before:
 - this will require sockets -- the dns one needed it too, but this one is more explicit i think
 - sockets are like the portal through which you communicate other devices, it sort of creates a connection. a literal socket almost. so the ip address corresponds to the device and the port number is what specifies the specific socket you're connected to.
-- so for this project the client will be sending on one port and server will be listening on another port
+- so for this project the client will be sending on one port and server will be listening on another port, so this means two files as well
 - multithreading applications -- do i want to do this in go? just change up the language a little bit? network programming in go should be pretty feasible to do as well, i just need to learn how to set up sockets and everything
+- ok genuinely, i think my retention would get diluted if i did it in go, so i'm going to do it in python insead again. and focus more on design.
 
-- anytime a user connects to the server adn types a message, it has to be broadcasted
+- anytime a user connects to the server and types a message, it has to be broadcasted
 
 things i researched:
 
-telnet was the precursor to ssh, bascically allowed you to access a remote computer on your LAN from your laptop,
+telnet was the precursor to ssh, bascically allowed you to access a remote computer on your LAN from your laptop
+
+TCP Based Echo Service
+
+One echo service is defined as a connection based application on TCP. A server listens for TCP connections on TCP port 7. Once a connection is established any data received is sent back. This continues until the calling user terminates the connection.
+
+
+
+Implementation:
+
+started off with creating a tcp socket cuz i somewhat remember it.
+after setting that up, i had to figure out multithreading to allow for multiple clients. 
+python also apparently has a library to support multiprocessing, which i think it like their "fork". and the problem with python locks is that they don't actually use multiprocessing even it the computer supports it because it can run on one interpreter. C can on the other handle multicore.
+
+the other problem that i faced, was that the clients wouldnt receive updates from the server from other clients, until they sent a message first, and that's because the client was only recieving messages at after they sent a message, so instead i had to create another thread specifically for listening. after that it was chill.
+
+i also wanted to try doing it using asynch to do it, it allows for cooperative multitasking, i think its like a multithreading but only theres one thread and the library takes care of when what needs to happen. but i got kinda tired and lazy oops. will experiment with asynchio some other day.
+
+https://realpython.com/python-sockets/#handling-multiple-connections
+
+

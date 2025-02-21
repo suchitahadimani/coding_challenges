@@ -1,0 +1,4 @@
+this one felt a bit more personal, because i was asked to do this during an interview once, and absolutely failed. so time to try again :DDD
+
+things i know:
+- used to control how many requests a server can take within a certain timeframe.
