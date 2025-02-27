@@ -1,4 +1,19 @@
 this one felt a bit more personal, because i was asked to do this during an interview once, and absolutely failed. so time to try again :DDD
 
 things i know:
-- used to control how many requests a server can take within a certain timeframe.
+- used to control how many requests a server can take within a certain timeframe probably because your servers can only handle a certain amount of request? dont want to overwhelm the servers.
+
+things i researched:
+
+other reasons to rate limit:
+- to prevent those who spam/spot those who are intentionally try to flood servers and prevent service to a certain system
+- you want to ensure low-priority requests don't overwhelm higher priority requests
+- spike in traffic
+
+ways to limit the rate:
+- token bucket: keep adding a certain number of tokens to a "bucket", which has a fixed max capacity. A request will be handled if there is a token in the bucket. This helps handle sudden outburst of network traffic. After the tokens in the bucket are used up, the rate that requests are handled depends on the rate of replinishment.
+- leaky bucket: all requests are added to the bucket, if the bucket is full packet loss occurs. The requests in the bucket are dealt with at a fixed rate. this is easier to implement and is consistent.
+- fixed time interval: if a user's number of requests exceeds a certain amount within a fixed interval, drop the remaining packets
+- sliding window: everything is time stamped and the window is sliding, if the size of the set at that window is already at the max, then no more new requests.
+
+goals: creating an api and learning how to use postman properly...

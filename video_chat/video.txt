@@ -1,0 +1,40 @@
+things i already know:
+- will require webrtc or something to establish a persistent open connection between the two clients. it can either be a peer-to-peer service connecting two computers, or it can be an application which would act as the intermediary to do so.
+
+things i had to research:
+- rtc = real time communications
+- takes care of everything that would make rtc difficult such as firewalls, encryption, signaling, and media capture,
+- ICE, STUN, & TURN servers --> depending on the use case and determining the optial connectivity path/acting as intermediary as necessary between two clients
+
+==============================================================================================================
+Learned about navigator:
+// Check if the user is online
+console.log(navigator.onLine);  // true (online) or false (offline)
+
+// Get browser and OS information
+console.log(navigator.userAgent);  
+
+// Get user's preferred language
+console.log(navigator.language);  
+console.log(navigator.languages);  
+
+// Check if WebRTC (camera/mic) is supported
+console.log(!!navigator.mediaDevices?.getUserMedia);  
+
+// Access camera and microphone
+navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    .then(stream => console.log("Access granted"))
+    .catch(err => console.error("Access denied", err));
+
+// Get user's geolocation
+navigator.geolocation.getCurrentPosition(
+    pos => console.log(pos.coords.latitude, pos.coords.longitude),
+    err => console.error("Location error:", err)
+);
+
+// Detect if the device has a touchscreen
+console.log(navigator.maxTouchPoints > 0 ? "Touchscreen available" : "No touchscreen");
+
+// Check battery level
+navigator.getBattery().then(battery => console.log(`Battery: ${battery.level * 100}%`));
+====================================================================================================================
