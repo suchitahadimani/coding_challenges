@@ -1,0 +1,15 @@
+I discovered John Crickett's Coding Challenges almost a year ago.
+
+Even back then, I could tell the projects proposed here, appealed to more than other projects I had done, primarily due to my interest in understanding systems fundamentally and doing network programming. I had good intentions to start back then, but alas, here were are. Better late than never.
+
+The quality of the projects varies. Starting off, I didn't unit test very much, as the primary focus was on building and getting comfortable and coding often. The goal reamins the same throughout, to be better than I was before. 
+
+The order in which I completed these:
+- dns_resolver
+- realtime_chat
+- rate_limiter
+- traceroute
+- load_balancer
+- ntp
+- memcached
+

@@ -1,0 +1,21 @@
+things i know:
+- load balancing serves to distribute load across various servers that a company might own
+- loab balancing algorithms for best distribution
+- round robin style -- just go in a circle and give one request to each server (some servers might have heavier loads idk)
+- availability -- assign to the first server that becomes free
+- strength of server -- heavier requests to server that are stronger/can support more connections/optimized for heavy loads 
+- random -- just randomly assign which works decently well from what i understand
+
+
+things i researched:
+
+two approaches to load balancing:
+- Dynamic, which takes into account the current state of each of the backend servers, and
+- Static, which distributes traffic according to a static algorithm, without considering the state of the server.
+
+
+things i learned:
+
+how to forward from one port to another --> just have to use requests like anything else.
+how to maintain a heart beat (typically needs to be every 15-60 seconds)
+how to maintain a list of active servers to ensure requests can always be processed --  i kinda forgot you had to this which is the whole point of the heartbeat

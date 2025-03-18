@@ -1,0 +1,118 @@
+things i know:
+- ntp is network time protocol --  i know this because i took distributed systems and this was a means of time synchronization that we discussed (not a good one from what i recall?)
+- used for telling the time
+- based on the traceroute project, i know icmp mgiht be useful again? "Timestamp Request & Reply (Type 13 & 14) – Used to synchronize clocks between systems"
+
+
+things i researched:
+- oldest protocols in existence
+- built on muzullo's algorithm
+- Stratum-1 servers are directly connected to the time source, atomic clocks/gps, and then its organized in a hierarchal pattern after that, so in theory accuracy of time would be the highest for the stratum-1 servers?
+- ntp pool project : largest cluser of ntp servers --> found it fascinating that 1/3 of the servers are located in north america
+- kiss of death is what happens when you send too many packets it seems? and then the ntp server starts rate limiting you
+- i thought this was what was happening to me cuz my origin time kept returning 0, but i found its when the stratum is set to 0 https://blog.scaledcode.com/blog/ntp-gone-wrong/#:~:text=When%20a%20timestamp%20is%20not,fields%20used%20in%20the%20protocol. and you get a RATE message as ur ref id
+
+NTP ---- 
+
+       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |LI | VN  |Mode |    Stratum     |     Poll      |  Precision   |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                         Root Delay                            |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                         Root Dispersion                       |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                          Reference ID                         |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                                                               |
+      +                     Reference Timestamp (64)                  +
+      |                                                               |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                                                               |
+      +                      Origin Timestamp (64)                    +
+      |                                                               |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                                                               |
+      +                      Receive Timestamp (64)                   +
+      |                                                               |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                                                               |
+      +                      Transmit Timestamp (64)                  +
+      |                                                               |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                                                               |
+      .                                                               .
+      .                    Extension Field 1 (variable)               .
+      .                                                               .
+      |                                                               |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                                                               |
+      .                                                               .
+      .                    Extension Field 2 (variable)               .
+      .                                                               .
+      |                                                               |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                          Key Identifier                       |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                                                               |
+      |                            dgst (128)                         |
+      |                                                               |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+
+      im guessing i have to set the first line in the header?
+
+      LI - +-------+----------------------------------------+
+           | Value | Meaning                                |
+           +-------+----------------------------------------+
+           | 0     | no warning                             |
+           | 1     | last minute of the day has 61 seconds  |
+           | 2     | last minute of the day has 59 seconds  |
+           | 3     | unknown (clock unsynchronized)         |
+           +-------+----------------------------------------+
+    
+    2 bit - LI - 1
+    3 bit - VN - 4 (Current version of NTP)
+    3 bit - Mode - 3 (For client)
+    8 bit - Stratum - 2 (cuz i think apple's ntp is stratum 2)
+    8 bit - Poll - 7 (Suggest default between 6-10)
+    8 bit - Precision - 18
+
+    32 bits --> 4 bytes
+
+
+
+t0 is the client's timestamp of the request packet transmission
+t1 is the server's timestamp of the request packet reception
+t2 is the server's timestamp of the response packet transmission and
+t3 is the client's timestamp of the response packet reception
+
+
+but for some reason things weren't working with those definitions, so i ended up looking at somebody else's implement to realize that that they were using different time values
+
+t0 is the client's timestamp of the request packet transmission  -- use time.time before sending
+t1 is the server's timestamp of the request packet reception   --- 3rd timestamp returned by ntp
+t2 is the server's timestamp of the response packet transmission and  -- 4th timestamp returned by ntp
+t3 is the client's timestamp of the response packet reception  --- use time.time after reception
+
+
+this was my fault for not reading the documentation properly and just assuming the 4 numbers would be the ones listed in that order. from the website: 
+
+   Reference Timestamp: Time when the system clock was last set or
+   corrected, in NTP timestamp format.
+
+   Origin Timestamp (org): Time at the client when the request departed
+   for the server, in NTP timestamp format.
+
+   Receive Timestamp (rec): Time at the server when the request arrived
+   from the client, in NTP timestamp format.
+
+   Transmit Timestamp (xmt): Time at the server when the response left
+   for the client, in NTP timestamp format.
+
+
+ref time stamp is not useful for our case, and i think the origin time stamp will always be 0 because the server has no idea what the time on the client is nor does it care. the recieve time stamp is important in knowing when the packet arrived at the server, and the transmit is important in knowing when it left the server
+
+plus i didnt realize ntp was counting time since 1900 while unix counts time since 1970, im pretty sure both of them were developed in the 1970s ish so idk why theres a difference
+
+also the time stamps returned by ntp are split up. the first 32 bits represent the whole number and the second 32 bits for the fractionals, crazy amount of storage for fraction but i suppose that is the price of precision, i also missed this the first time through and was confused oops.

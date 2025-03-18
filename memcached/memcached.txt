@@ -1,0 +1,7 @@
+things i know:
+- if i had to guess what memcached does, i would think something with caching.
+- perhaps offering a caching service to businesses by keeping track of common queries, requests, etc and providing nearby servers maybee??
+
+
+things i researched:
+- copied and pasted definition of memcached -- " Memcached is a free, open source, high-performance, distributed memory object caching system. It is intended for use in speeding up dynamic web applications by reducing database load." bascially what i thought it was
