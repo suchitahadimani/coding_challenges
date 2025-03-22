@@ -1,3 +1,7 @@
+
+goals:
+- learn bit more about load balancing --- already knew how it worked back from when i was studing systems design 
+
 things i know:
 - load balancing serves to distribute load across various servers that a company might own
 - loab balancing algorithms for best distribution
@@ -8,14 +12,12 @@ things i know:
 
 
 things i researched:
-
-two approaches to load balancing:
-- Dynamic, which takes into account the current state of each of the backend servers, and
-- Static, which distributes traffic according to a static algorithm, without considering the state of the server.
+- two approaches to load balancing:
+    - dynamic, which takes into account the current state of each of the backend servers, and
+    - static, which distributes traffic according to a static algorithm, without considering the state of the server.
 
 
 things i learned:
-
-how to forward from one port to another --> just have to use requests like anything else.
-how to maintain a heart beat (typically needs to be every 15-60 seconds)
-how to maintain a list of active servers to ensure requests can always be processed --  i kinda forgot you had to this which is the whole point of the heartbeat
+- how to forward from one port to another --> just have to use requests like anything else.
+- how to maintain a heart beat (typically needs to be every 15-60 seconds)
+- how to maintain a list of active servers to ensure requests can always be processed --  i kinda forgot you had to this which is the whole point of the heartbeat

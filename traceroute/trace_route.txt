@@ -1,18 +1,22 @@
+goals:
+- this was supposed to be an easier project i wanted to learn about building an executable, which was not super cool but still
+
 things i know:
-- i want to do this in rust and try out network programming in a different language. this one is just sending out packets on udp, and then measuring for the ICMP time packet and determine the host which sent that packet.
-- you want to keep increasing the ttl until it reaches the destinations.
+- i want to do this in rust and try out network programming in a different language. this one is just sending out packets on udp, and then measuring for the icmp time packet to determine the host which sent that packet.
+- you want to keep increasing the ttl until it reaches the destination.
+- one port for sending packets + one port for receiving the icmp response.
 
-Things i learned:
-- one port for sending packets + one port for receiving the ICMP response
-- ICMP message stands for Internet Control Message Protocol, mainly used for errors/diagnostics
-- Time Exceeded (Type 11) – Used in traceroute to track the path of packets. Code 0: TTL (Time-To-Live) expired in transit
+things i learned:
+- icmp message stands for internet control message protocol, mainly used for errors/diagnostics.
+- time exceeded (type 11) – used in traceroute to track the path of packets. code 0: ttl (time-to-live) expired in transit.
 
-Random but might use in the future projects:
-- Echo Request & Echo Reply (Type 8 & 0) – Used by the ping command to check if a host is reachable.
-- Timestamp Request & Reply (Type 13 & 14) – Used to synchronize clocks between systems.   -- might use in the ntp implementation?
+random but might use in future projects:
+- echo request & echo reply (type 8 & 0) – used by the ping command to check if a host is reachable.
+- timestamp request & reply (type 13 & 14) – used to synchronize clocks between systems. might use in the ntp implementation?
 
+traceroute was relatively easy to implement in about 30-60 minutes, but of course lots of interesting concepts at play.
+- using ttl and the built-in function to resolve the hostname into an ip address was cool, especially since i already implemented that by hand last time.
+- also learned about building a python executable and how to create custom commands ("ctraceroute" in my case).
+    - chmod +x ctraceroute.py, mv ctraceroute.py ctraceroute, add ctraceroute to PATH, works temporarily
 
-traceroute was relatively easy to implement in the matter of 30-60 minutes, but of course lots of interesting concepts at play.
-it was interesting using ttl and using the built in function to resolve the hostname into an ip address especially since i already implemented that from hand last time.
-
-i also learned about building a python executable and how to create custom commands "ctraceroute" in my case
+jk ended up doing it in python, i didnt want to be spreading myself too thin across different languages.

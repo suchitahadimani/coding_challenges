@@ -1,44 +1,55 @@
 this one felt a bit more personal, because i was asked to do this during an interview once, and absolutely failed. so time to try again :DDD
 
+goals:
+
+- build an api and properly learn postman
+
 things i know:
-- used to control how many requests a server can take within a certain timeframe probably because your servers can only handle a certain amount of request? dont want to overwhelm the servers.
+
+- rate limiting controls how many requests a server can take within a certain timeframe, mostly to avoid overwhelming the servers.
 
 things i researched:
 
-other reasons to rate limit:
-- to prevent those who spam/spot those who are intentionally try to flood servers and prevent service to a certain system (ddos attacks!!)
-- you want to ensure low-priority requests don't overwhelm higher priority requests
-- spike in traffic
+ other reasons to rate limit:
+
+- prevent spam and detect malicious attempts to flood servers (ddos attacks)
+- ensure low-priority requests don't overwhelm high-priority ones
+- handle sudden spikes in traffic
 
 ways to limit the rate:
-- token bucket: keep adding a certain number of tokens to a "bucket", which has a fixed max capacity. A request will be handled if there is a token in the bucket. This helps handle sudden outburst of network traffic. After the tokens in the bucket are used up, the rate that requests are handled depends on the rate of replinishment.
-- leaky bucket: all requests are added to the bucket, if the bucket is full packet loss occurs. The requests in the bucket are dealt with at a fixed rate. this is easier to implement and is consistent.
-- fixed time interval: if a user's number of requests exceeds a certain amount within a fixed interval, drop the remaining packets
-- sliding window: everything is time stamped and the window is sliding, if the size of the set at that window is already at the max, then no more new requests. --> this is the type i tried to implement during the interview and failed, i feel like token_bucketing is easier to implement, or even fixed interval even though they may not be as efficient, it would have lead to a good conversation on the pros and cons of rate limiting
 
+- token bucket: tokens are added to a bucket at a fixed rate. requests are processed if a token is available. helps handle bursts of traffic, but once tokens run out, processing slows to refill rate.
+- leaky bucket: all requests go into a bucket, but they are processed at a fixed rate. if full, new requests are dropped. simpler to implement and ensures steady request flow.
+- fixed time interval: if a user exceeds a set number of requests within a fixed window, remaining requests are dropped.
+- sliding window: timestamps requests and keeps a rolling count within a moving window. if the count exceeds the max, new requests are rejected.
+  - this is the one i tried to implement during the interview and failed. looking back, token bucket or even fixed interval would've been easier and still led to good discussions on trade-offs.
 
-so essentially, i think after the app starts running, it doesn't run the while loop i tried to add for add token, or maybe worse practice? 
-    
-anyways, i used threading to replenish the buckets to get 1 request per second, and had to create a thread for each of the other rate limiters to ensure they kept replinishing as expected otherwise it would cause problems
+implementation struggles:
 
-also i realized i was using a single lock shared between the different rate limiters meaning, they were sabotaging each other in terms of latency oops. i left it as is because for the graphs, i was testing them out one by one, and i think its okay for the getting the general concepts.
+- after starting the app, the while loop i used for adding tokens didn’t seem to run properly—probably bad practice?
+- used threading to replenish buckets at 1 req/sec. had to create separate threads for each rate limiter or else they wouldn't replenish correctly.
+- initially used a single shared lock across all limiters, which sabotaged performance. left it as is for testing since i was running one at a time anyway.
 
+testing multiple requests:
 
-Run multiple requests in parallel using xargs -P (where -P defines concurrency) and curl. this does 10 requests with 5 threads
+ran requests in parallel using `xargs -P` (where `-P` defines concurrency) and curl:
+
+```sh
 seq 1 10 | xargs -P 5 -I {} curl -X GET http://127.0.0.1:8080/token_bucket
+```
 
-apparently, cloudflare uses the sliding window counter approach for their projects -- https://blog.cloudflare.com/counting-things-a-lot-of-different-things/
+ interesting find:
 
-goals: creating an api and learning how to use postman properly...
+- cloudflare uses the sliding window counter approach for their projects (https://blog.cloudflare.com/counting-things-a-lot-of-different-things/)
 
-postman is actually really cool to use i like the graphs that it gives and i think i was able to understand the pros and cons of different rate limiting mechanisms because of it. that being said, i think some of the stuff it does can be done with a simply python script as well.
+ postman thoughts:
 
-things you can use postman for:
-- used for api testing -- can set concurrent users, iterations, and scheduled/shared testing of apis which is super nice to check out
-- you can also use api-keys in dev/staging phases which is cool and can use the test features to validate api responses
-- postman can also give mock api responses which is pretty interesting if frontend wants to test features without backend being fully ready yet
--
+- actually really cool, especially the graphs -- it helped me compare rate limiting methods and understand trade-offs.
+- some things it does could be replicated with a simple python script, but it's still useful.
 
+ things you can do with postman:
 
-
-attached are graph outputs, lots of factors to consider for rate limitings
+- api testing: set concurrent users, iterations, and schedule/shared testing.
+- use api keys during dev/staging.
+- test api responses with built-in validation.
+- mock api responses, which is great for frontend testing when backend isn’t ready.

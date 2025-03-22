@@ -1,0 +1,7 @@
+things i know:
+- this is in relation to the pub-sub models where you can have subscribers to a certain broadcast done by the publisher, but i don'tremember why this was a useful concept to have.
+
+things i researched:
+
+
+things i learned along the way:

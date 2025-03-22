@@ -5,3 +5,19 @@ things i know:
 
 things i researched:
 - copied and pasted definition of memcached -- " Memcached is a free, open source, high-performance, distributed memory object caching system. It is intended for use in speeding up dynamic web applications by reducing database load." bascially what i thought it was
+- LRU Cache -- implemented on both client and server side.
+- from what i understand each server has its own cache, and all the client has to do is figure out which cached server it needs to access
+- socket in general is the way two devices can connect, berkley socket just references the api which supports all the functions that socket programming might require
+
+
+
+
+
+things i learned about asyncio (chose to learn this as opposed to using threading again):
+- await passes function control back to the event loop
+- native coroutine is a function defined using async def. Can use await to pause execution until an awaited coroutine completes. Requires an event loop to run (asyncio.run() or await inside another coroutine).
+- Uses async for to iterate over values. Each iteration can await an async operation before yielding. Useful for streaming data (e.g., real-time sensor data, log processing). <-- might try to use this somehow in a personal project.
+
+
+- dataclasses don't enforce typechecking which was intruiging, so
+ switched over to using pydantic which is apparently used by fastapi for typechecking

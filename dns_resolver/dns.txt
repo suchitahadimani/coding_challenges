@@ -1,131 +1,119 @@
-Things I remember about DNS from Networking:
-- domain name system is what it stands for I think.
-- basically you type in a URL, which is the website you want to access but to a computer, it really needs to know which server it has to access to ensure that you get what you requested for.
-- first it connects to the local DNS cache, not sure how many there are per geographical location, but typically the major website - ip adress pairs will be found easily that way. google.com/va-midwest, netflix.com/va-midwest should mostly be available because they are commonly accessed websites. im guessing your ISP might also be able to provide more relevant and personalized caching? need to look into this.
-- but if it doesnt find it, first it checks the authoratative level dns i think with has major urls, then it goes to tld? i forget what its called, which has top level such as google.com but not the specific location i think, and then if it is unable to find it there , it goes to the root-level dns server which has the .com and .org. there are 13 of these in the world.
-- in terms of implementation, im not sure if theres any library or something that would help us with this...
+i had already done this for a networking class before, but thought id take another jab at it
 
+goals:
+- touch up socket programming and learn about how to make packets
 
-Things I researched: 
+things i remember about dns from networking:
 
-- I was sosos close, the servers are checked in the opposite order. Root-level first based on general domain name, .com for example, and then it goes to the tld or top-level domain server to google.com, and finally to the actual authoratative server to the specific midwest.google.com server 
+- domain name system is what it stands for, i think.
+- basically, you type in a url, which is the website you want to access, but to a computer, it really needs to know which server to access to ensure you get what you requested.
+- first, it connects to the local dns cache. not sure how many there are per geographical location, but major website-ip address pairs will usually be found that way. google.com/va-midwest, netflix.com/va-midwest should mostly be available because they are commonly accessed websites. guessing your isp might also provide more relevant and personalized caching? need to look into this.
+- if it doesn’t find it, first it checks the authoritative dns, which has major urls, then it goes to tld (i forget what it’s called exactly), which has top-level domains like google.com but not the specific location, and finally, if it’s still not found, it goes to the root-level dns server, which has .com and .org. there are 13 of these in the world.
+- in terms of implementation, not sure if there’s a library or something that would help with this...
 
-https://datatracker.ietf.org/doc/html/rfc1035#section-4.1.1
+things i researched:
 
-A DNS message has:
-- A header.
-- A questions section:
+- i was sosos close, but the servers are checked in the opposite order. root-level first based on general domain name (.com, for example), then tld (top-level domain server) for google.com, and finally the authoritative server for something like midwest.google.com.
 
-(- An answer section.
-- An authority section.
-- An additional section.)
+[link to rfc1035](https://datatracker.ietf.org/doc/html/rfc1035section-4.1.1)
 
-DNS HEADER
+a dns message has:
 
-    16 bits per field aka 2 bytes
+- a header
+- a question section
+- an answer section
+- an authority section
+- an additional section
 
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-    |                      ID                       |
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-    |QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   |
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-    |                    QDCOUNT                    |
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-    |                    ANCOUNT                    |
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-    |                    NSCOUNT                    |
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-    |                    ARCOUNT                    |
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+dns header:
 
+16 bits per field (2 bytes per field)
 
-    ID - 0 (Random? not sure if this matters)
-    QR - 0  (0 for queries -- i had mistakenly set this to 1, originally and everything kept timing out and i had no idea why)
-    Opcode - 0000  (standard?)
-    AA - 0
-    TC - 0
-    RD - 0  (recursion not desired, iterative is better from what i recall because it reduces network traffic but might be slower)
-    RA - 0
-    Z - 000
-    RCODE - 0000
+```
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                      ID                       |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    QDCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    ANCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    NSCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    ARCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+```
 
-        (each is two bytes below)
-    QDCOUNT - 1 
-    ANCOUNT - 0
-    NSCOUNT - 0
-    ARCOUNT - 0
+id - 0 (random? not sure if this matters)
+qr - 0  (0 for queries -- i had mistakenly set this to 1 originally and everything kept timing out, no idea why)
+opcode - 0000  (standard?)
+aa - 0
+tc - 0
+rd - 0  (recursion not desired, iterative is better from what i recall because it reduces network traffic but might be slower)
+ra - 0
+z - 000
+rcode - 0000
 
-DNS QUESTION 
+(each is two bytes below)
+qdcount - 1
+ancount - 0
+nscount - 0
+arcount - 0
 
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-    |                                               |
-    /                     QNAME                     /
-    /                                               /
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-    |                     QTYPE                     |
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-    |                     QCLASS                    |
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-
-    QNAME - www.google.com (variable number of octets; no padding is used. you need to convert url into parts based on the period with size followed by letters in hexa/binary)
-
-    QTYPE - 1 (A for ip address of host i think?)
-    QCLASS - 1 (IN for the internet?)
-
-
+dns question:
+```
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                                               |
+/                     QNAME                     /
+/                                               /
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                     QTYPE                     |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                     QCLASS                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+```
+qname - www.google.com (variable number of octets; no padding is used. need to convert url into parts based on the period with size followed by letters in hex/binary)
+qtype - 1 (a for ip address of host i think?)
+qclass - 1 (in for the internet?)
 
 qtypes:
-1 (A): Standard host address (IP address) 
-2 (NS): Nameserver record 
-5 (CNAME): Canonical name record 
-15 (MX): Mail exchanger record 
-12 (PTR): Pointer record (reverse DNS lookup) 
+1 (a): standard host address (ip address)
+2 (ns): nameserver record
+5 (cname): canonical name record
+15 (mx): mail exchanger record
+12 (ptr): pointer record (reverse dns lookup)
 
+interesting finds:
 
+google’s public dns resolver essentially does what our isp does. i thought it was referring to google’s urls, but it’s not. you can configure your device to use google’s public dns resolver instead of your isp’s.
 
-google's public dns resolver essentially does what our ISP does, i thought it was referring to google's urls but it's not. you can configure your device to use google public dns resolver instead of ur ISPs
+i originally thought, if you use google dns, you wouldn’t need an isp, but dns only gives you the address of the website to visit. you still need to actually make an http request or whatever to load the webpage—hence the need for an isp.
 
-originally i was thinking, then you wouldn't need an isp, but dns only gives you the address of the website to visit, you need to then actually make an http request or whatever to ensure you can actually load the webpage, hence the need for isp
+google public dns is supposedly faster because they cache a lot due to scraping so much of the internet regularly. google crawls the web, stores basic information about website content, pictures, videos, etc., and keeps a cached version in its servers. this helps them run their algorithm and display the most relevant urls for the user.
 
-google public dns is supposedly faster becuase they already have a lot of caching due to scraping so much of the internet on a regular basis. google crawls the webs, stores basic informations about website content, pictures, videos, etc and stores a cached version in its servers to make it more acessible and so that they can run their own algorithm and display the most relevant URL for the user.
+udp sockets are used for dns packets
 
-UDP SOCKETS are used for dns packets 
+i think this is the response field for dns:
 
-I think this is the response field for the dns?
+```
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                                               |
+/                      NAME                     /
+|                                               |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                      TYPE                     |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                     CLASS                     |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                      TTL                      |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                   RDLENGTH                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+/                     RDATA                     /
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+```
 
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-    |                                               |
-    /                                               /
-    /                      NAME                     /
-    |                                               |
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-    |                      TYPE                     |
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-    |                     CLASS                     |
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-    |                      TTL                      |
-    |                                               |
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-    |                   RDLENGTH                    |
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--|
-    /                     RDATA                     /
-    /                                               /
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+i started making functions for all of the above to keep things organized. parsing bytes to integers/strings is super useful in networking.
 
-In every DNS Response you will find the same number of answers per section (answer, authoratative, and additional)
-
-Also the DNS response includes the original header, question, AND THEN the actual resposne.
-I was trying to print the dns response, and i saw that it had a length of 192, but then it kept not working properly (and also 192 felt weirdly long for a response, espeically if im supposed to extract an ip address) apparently, that's the code for compression, anything that starts with 11-- is just compressed. which i could have found had a scrolled down a little more.
-
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-    | 1  1|                OFFSET                   |
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-
-The first two bits are ones.  This allows a pointer to be distinguished from a label, since the label must begin with two zero bits becauselabels are restricted to 63 octets or less.  (The 10 and 01 combinationsare reserved for future use.)  The OFFSET field specifies an offset fromthe start of the message.
-
-
-things were starting to get messy, so i started to create functions for all of the above, so its not just a one time thing. parsing bytes to integers/strings is a useful skill in netwroking.
-
-
-
-Lots of help + guideliens from this: https://implement-dns.wizardzines.com/book/intro --> really liked this website for learning the basics. 
+lots of help from this site: (https://implement-dns.wizardzines.com/book/intro) — really liked it for learning the basics.
