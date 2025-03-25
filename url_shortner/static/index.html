@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastAPI UI</title>
+</head>
+<body>
+    <h2>Enter Text</h2>
+    <input type="text" id="userInput" placeholder="Type something...">
+    <button onclick="sendData()">Submit</button>
+    <p id="response"></p>
+
+    <script>
+        function sendData() {
+            const input = document.getElementById("userInput").value;
+            
+            fetch("http://127.0.0.1:8000/submit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: input })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("response").innerText = "Shortened URL: https://localhost:8000/" + data.message;
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>

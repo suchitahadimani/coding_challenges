@@ -1,0 +1,17 @@
+things i know:
+- create a database of long and short urls -- dont remember which to use as the key and value, because probably the way this whole thing works is that you have long url that you hash (??) and generate a smaller url
+-if multiple users enter the same long url --> they should be able to retrieve the same short url
+-anytime a user enters in the tinyurl, they are automatically rerouted to the longer version of the file
+
+
+- this sounds a little scary in my mind, but i don't think its that bad in implementation, as i do more and more of these, ive realized that most of the common applications are genuinely easy to do/write (at least their basic versions)
+- using fastapi this time instead of flask because i felt like changing it up a little bit
+- if i were to implement this, i would just use two hash maps. long:short for one and short:long
+
+things i researched:
+- swagger does documentation 
+- a way to shorten a url is to use a hash function (like MD5 or SHA-256) to generate a fixed-length hash of the original URL, which is then encoded into a shorter form using Base62 and to garuntee uniquenes we could append a Unique Identifier (Salting) 
+
+things i learned along the way:
+- the redirect thing does not open unless it is in the right format, which means regex is required. formal methods.
+
