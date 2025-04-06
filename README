@@ -11,5 +11,7 @@ The order in which I completed these:
 - traceroute
 - load_balancer
 - ntp
-- memcached
+- nats
+- url_shortner
+- 
 

@@ -1,7 +1,30 @@
 things i know:
 - this is in relation to the pub-sub models where you can have subscribers to a certain broadcast done by the publisher, but i don'tremember why this was a useful concept to have.
 
-things i researched:
+goals:
+- to learn how pub-sub models work
+- understand message broking and why it would be useful
 
+things i researched:
+- middleware: "software that acts as a bridge between an operating system or database and applications, especially on a network"  -- nats is considered middleware so i figured it was worth looking into. based on this, it feels like load balancer or firewalls even would count as middleware standing in between client application and the actual database/server
+- message brokers are used to faciliate communication between different parts of a system and allowing for the segmentation of work and coordination between those segments.
+- they can actually be point-to-point or can be pub-sub models
+- Zero-allocation byte parser: some focus on simply scanning the buffer and identifying the start and end of a message then returning that index in the original buffer. Others create a state machine that steps through the input buffer a character at a time.
+
+common message brokers:
+• Amazon MQ (AWS)
+• Apache ActiveMQ
+• IBM MQ
+• Microsoft Azure Service Bus
+• NATS
+• RabbitMQ
+• TIBCO Messaging
 
 things i learned along the way:
+
+
+
+brainstorm implementation:
+
+you have a set of topics, maybe hashmap?? topic is key, and all the subscribers are values. 
+another hashmap for the subscriber and values can store reader and writer, so that when somebody publishes, all you have to do is retrieve all the writers for that topic and and write the message to them. actually use objects for each subscriber. im assuming the writers are unique to each thing and its okay to just use that.
